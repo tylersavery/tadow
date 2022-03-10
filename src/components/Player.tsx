@@ -3,7 +3,6 @@ import { AUDIO, VIDEO } from "../constants";
 import { Quadrant } from "../enums";
 import { Canvas } from "./Canvas";
 import styled from "styled-components";
-import { useDragging } from "../hooks/dragable";
 
 const Overlay = styled.div`
   position: absolute;
@@ -92,7 +91,8 @@ export const Player = () => {
 
   useEffect(() => {
     init();
-  }, []);
+    console.log("effe");
+  });
 
   const init = async () => {
     await loadVideo();
