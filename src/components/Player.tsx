@@ -284,12 +284,12 @@ export const Player = () => {
           ></div>
         </Overlay>
       </div>
-      <div>
+      {/* <div>
         <button onClick={() => _quadrant(Quadrant.TopLeft)}>1</button>
         <button onClick={() => _quadrant(Quadrant.TopRight)}>2</button>
         <button onClick={() => _quadrant(Quadrant.BottomLeft)}>3</button>
         <button onClick={() => _quadrant(Quadrant.BottomRight)}>4</button>
-      </div>
+      </div> */}
 
       <video muted playsInline ref={videoRef} style={{ opacity: 0 }} />
     </>
