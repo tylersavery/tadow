@@ -10,7 +10,9 @@
     "export": "next build && next export"
   },
   "dependencies": {
+    "@types/lodash": "^4.14.179",
     "@types/styled-components": "^5.1.24",
+    "lodash": "^4.17.21",
     "logrocket": "^2.2.0",
     "logrocket-react": "^5.0.1",
     "next": "12.1.0",

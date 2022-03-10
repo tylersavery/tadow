@@ -3,6 +3,7 @@ import { AUDIO, VIDEO } from "../constants";
 import { Quadrant } from "../enums";
 import { Canvas } from "./Canvas";
 import styled from "styled-components";
+import { debounce } from "lodash";
 
 const Overlay = styled.div`
   position: absolute;
@@ -91,7 +92,6 @@ export const Player = () => {
 
   useEffect(() => {
     init();
-    console.log("effe");
   }, []);
 
   const init = async () => {
@@ -122,7 +122,6 @@ export const Player = () => {
       const v = videoRef!.current!;
       v.src = VIDEO.url;
       v.addEventListener("canplaythrough", () => {
-        console.log("LOADED");
         _videoLoaded(true);
         resolve();
 
@@ -180,17 +179,51 @@ export const Player = () => {
   };
 
   const updatePosition = (posX: number, posY: number) => {
-    //todo throttle
     _x(posX);
     _y(posY);
 
     const tmCoord = [size / 2, 0];
     const blCoord = [0, size];
     const brCoord = [size, size];
+    const mCoord = [size / 2, size / 2];
 
     const distanceFromTm = getDistance(posX, tmCoord[0], posY, tmCoord[1]);
     const distanceFromBl = getDistance(posX, blCoord[0], posY, blCoord[1]);
     const distanceFromBr = getDistance(posX, brCoord[0], posY, brCoord[1]);
+    const distanceFromM = getDistance(posX, mCoord[0], posY, mCoord[1]);
+
+    let distances = [
+      { k: "tm", v: distanceFromTm },
+      { k: "bl", v: distanceFromBl },
+      { k: "br", v: distanceFromBr },
+      { k: "m", v: distanceFromM },
+    ];
+
+    const sorted = distances.sort((a, b) => (a.v < b.v ? -1 : 1));
+
+    const closest = sorted[0].k;
+
+    switch (closest) {
+      case "tm":
+        if (quadrant != Quadrant.TopLeft) {
+          _quadrant(Quadrant.TopLeft);
+        }
+        break;
+      case "bl":
+        if (quadrant != Quadrant.BottomLeft) {
+          _quadrant(Quadrant.BottomLeft);
+        }
+        break;
+      case "br":
+        if (quadrant != Quadrant.TopRight) {
+          _quadrant(Quadrant.TopRight);
+        }
+        break;
+      default:
+        if (quadrant != Quadrant.BottomRight) {
+          _quadrant(Quadrant.BottomRight);
+        }
+    }
 
     const fraction1 = 1 - distanceFromTm / size;
     const fraction2 = 1 - distanceFromBl / size;
@@ -223,10 +256,19 @@ export const Player = () => {
         <Overlay
           onTouchMove={(e) => {
             const touch = e.touches[0];
-            updatePosition(touch.clientX, touch.clientY);
+            const debouncedUpdate = debounce(
+              () => updatePosition(touch.clientX, touch.clientY),
+              10
+            );
+            debouncedUpdate();
           }}
           onClick={(e) => {
             updatePosition(e.clientX, e.clientY);
+            const debouncedUpdate = debounce(
+              () => updatePosition(e.clientX, e.clientY),
+              10
+            );
+            debouncedUpdate();
           }}
         >
           <div className="label label-1">BASS</div>
@@ -242,12 +284,12 @@ export const Player = () => {
           ></div>
         </Overlay>
       </div>
-      {/* <div>
+      <div>
         <button onClick={() => _quadrant(Quadrant.TopLeft)}>1</button>
         <button onClick={() => _quadrant(Quadrant.TopRight)}>2</button>
         <button onClick={() => _quadrant(Quadrant.BottomLeft)}>3</button>
         <button onClick={() => _quadrant(Quadrant.BottomRight)}>4</button>
-      </div> */}
+      </div>
 
       <video muted playsInline ref={videoRef} style={{ opacity: 0 }} />
     </>
