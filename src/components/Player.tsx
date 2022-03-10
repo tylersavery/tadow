@@ -91,30 +91,30 @@ export const Player = () => {
   //   const [dragRef, x, y, isDragging] = useDragging();
 
   useEffect(() => {
+    async function init() {
+      await loadVideo();
+      await loadAudio(AUDIO.bass, audioElement1);
+      await loadAudio(AUDIO.sax, audioElement2);
+      await loadAudio(AUDIO.guitar, audioElement3);
+
+      initAudio();
+
+      const v = videoRef!.current!;
+      v.play();
+      playAudio();
+
+      v.addEventListener("ended", (_) => {
+        v.currentTime = 0;
+        v.play();
+      });
+
+      updatePosition(size / 2, size / 2);
+
+      _ready(true);
+    }
+
     init();
   }, []);
-
-  const init = async () => {
-    await loadVideo();
-    await loadAudio(AUDIO.bass, audioElement1);
-    await loadAudio(AUDIO.sax, audioElement2);
-    await loadAudio(AUDIO.guitar, audioElement3);
-
-    initAudio();
-
-    const v = videoRef!.current!;
-    v.play();
-    playAudio();
-
-    v.addEventListener("ended", (_) => {
-      v.currentTime = 0;
-      v.play();
-    });
-
-    updatePosition(size / 2, size / 2);
-
-    _ready(true);
-  };
 
   const loadVideo = () =>
     new Promise<void>((resolve, reject) => {

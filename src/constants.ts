@@ -6,8 +6,7 @@ export const VIDEO = {
 };
 
 export const AUDIO = {
-  bass: "/bass.mp3",
-  guitar: "/guitar.mp3",
-  p4: "/p4.mp3",
-  sax: "/sax.mp3",
+  bass: "/bass2.mp3",
+  guitar: "/guitar3.mp3",
+  sax: "/sax2.mp3",
 };
