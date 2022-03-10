@@ -92,7 +92,7 @@ export const Player = () => {
   useEffect(() => {
     init();
     console.log("effe");
-  });
+  }, []);
 
   const init = async () => {
     await loadVideo();
